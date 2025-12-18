@@ -54,6 +54,12 @@ public final class R2Core: @unchecked Sendable {
         }
     }
 
+    public func setColorLimit(_ limit: R2ColorMode) async {
+        await runVoid {
+            self.core.pointee.cons.pointee.context.pointee.color_limit = limit.rawValue
+        }
+    }
+
     @discardableResult
     public func openFile(
         uri: String,
