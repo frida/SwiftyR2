@@ -63,7 +63,7 @@ private func blockingFromAsyncThrowing<T>(
     let sema = DispatchSemaphore(value: 0)
     var result: Result<T, Error>!
 
-    Task.detached {
+    Task.detached(priority: .userInitiated) {
         do {
             let value = try await body()
             result = .success(value)
