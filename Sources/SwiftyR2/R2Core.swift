@@ -60,6 +60,15 @@ public final class R2Core: @unchecked Sendable {
         }
     }
 
+    public func applyTheme(_ theme: String) async {
+        await runVoid {
+            // Two hacks:
+            // - Use r_core_cmd() as r_core_cmd_str() prevents theme updates from being applied, due to the cons push/pop.
+            // - Reset first (ecd), as cmd_load_theme() sets cmdfilter to "ec ", which means any ecd command in the theme gets ignored.
+            r_core_cmd(self.core, "ecd; eco \(theme)", false)
+        }
+    }
+
     @discardableResult
     public func openFile(
         uri: String,
