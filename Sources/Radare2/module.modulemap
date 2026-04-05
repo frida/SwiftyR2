@@ -1,0 +1,5 @@
+module Radare2 [system] {
+    header "shim.h"
+    link "r_core"
+    export *
+}

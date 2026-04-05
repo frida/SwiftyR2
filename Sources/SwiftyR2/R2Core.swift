@@ -175,9 +175,13 @@ private final class CoreThreadExecutor {
             let job = jobs.removeFirst()
             condition.unlock()
 
+            #if canImport(Darwin)
             autoreleasepool {
                 job()
             }
+            #else
+            job()
+            #endif
         }
     }
 

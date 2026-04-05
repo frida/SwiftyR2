@@ -6,10 +6,14 @@ A Swift wrapper for Radare2, the popular reverse engineering framework. This pac
 
 ## Features
 
-- **Async/Await API**: Modern Swift concurrency support with async/await
-- **Type Safety**: Strongly typed interfaces for Radare2 functionality
-- **Cross-Platform**: Supports macOS 11+ and iOS 13+
-- **Thread Safe**: Safe concurrent access to Radare2 core functionality
+- **Async/Await API**: Modern Swift concurrency support
+  with async/await
+- **Type Safety**: Strongly typed interfaces for Radare2
+  functionality
+- **Cross-Platform**: Supports macOS 11+, iOS 13+, and
+  non-Apple platforms (e.g. Linux) via system radare2
+- **Thread Safe**: Safe concurrent access to Radare2 core
+  functionality
 
 ## Installation
 
@@ -69,8 +73,11 @@ print("Current architecture: \(arch)")
 ## Requirements
 
 - Swift 5.9+
-- macOS 11.0+ or iOS 13.0+
-- Xcode 14+
+- macOS 11.0+, iOS 13.0+, or any other Swift-supported
+  platform
+- Xcode 14+ (Apple platforms)
+- radare2 system library via pkg-config (non-Apple
+  platforms)
 
 ## Contributing
 
