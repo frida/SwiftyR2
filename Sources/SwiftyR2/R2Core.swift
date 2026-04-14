@@ -1,12 +1,6 @@
 import Foundation
 import Radare2
 
-#if canImport(Darwin)
-    import Darwin
-#else
-    import Glibc
-#endif
-
 public final class R2Core: @unchecked Sendable {
     let core: UnsafeMutablePointer<RCore>
     public let config: R2Config
@@ -143,7 +137,7 @@ private final class CoreThreadExecutor {
     private var stopped = false
 
     private var thread: Thread!
-    private var pthreadID: pthread_t? = nil
+    private var ownerThread: Thread? = nil
 
     init() {
         thread = Thread { [weak self] in
@@ -159,7 +153,7 @@ private final class CoreThreadExecutor {
     }
 
     private func runLoop() {
-        pthreadID = pthread_self()
+        ownerThread = Thread.current
 
         while true {
             condition.lock()
@@ -186,8 +180,8 @@ private final class CoreThreadExecutor {
     }
 
     private func isOnCoreThread() -> Bool {
-        guard let tid = pthreadID else { return false }
-        return pthread_equal(pthread_self(), tid) != 0
+        guard let owner = ownerThread else { return false }
+        return owner === Thread.current
     }
 
     func submit(_ job: @escaping () -> Void) {
