@@ -5,6 +5,8 @@
  */
 #include <sys/types.h>
 #include <fcntl.h>
+#if !defined(_WIN32)
 #include <dirent.h>
+#endif
 
-#include <libr/r_core.h>
+#include <r_core.h>
