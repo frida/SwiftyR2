@@ -25,7 +25,7 @@ internal func _r2io_installPlugin(
     }
 
     if !state.isRegistered {
-        r_io_plugin_add(io, &swiftRIOPlugin)
+        r_libstore_add(io.pointee.libstore, &swiftRIOPlugin)
         state.isRegistered = true
     }
 }
