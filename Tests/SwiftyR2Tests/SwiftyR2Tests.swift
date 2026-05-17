@@ -14,4 +14,18 @@ final class SwiftyR2Tests: XCTestCase {
             "Expected version output to mention radare2, got: \(output)"
         )
     }
+
+    func testCmdWithLogsCapturesErrors() async throws {
+        let core = await R2Core.create()
+
+        let result = await core.cmdWithLogs("?v $FB @ 0xdeadbeef")
+        XCTAssertTrue(
+            result.hasErrors,
+            "Expected an error log entry when querying $FB without an analyzed function, got logs: \(result.logs)"
+        )
+        XCTAssertTrue(
+            result.errors.contains { $0.message.lowercased().contains("function") },
+            "Expected at least one error mentioning 'function', got: \(result.errors.map { $0.message })"
+        )
+    }
 }

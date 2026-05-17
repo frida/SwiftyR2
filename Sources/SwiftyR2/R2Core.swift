@@ -89,6 +89,24 @@ public final class R2Core: @unchecked Sendable {
         }
     }
 
+    @discardableResult
+    public func cmdWithLogs(_ command: String) async -> R2CommandResult {
+        await run {
+            let collector = R2LogCollector()
+            collector.ownerThread = Thread.current
+            let user = Unmanaged.passRetained(collector).toOpaque()
+            r_log_add_callback(r2LogCallback, user)
+            defer {
+                r_log_del_callback(r2LogCallback)
+                Unmanaged<R2LogCollector>.fromOpaque(user).release()
+            }
+            let cStr = r_core_cmd_str(self.core, command)!
+            defer { free(cStr) }
+            let output = String(cString: cStr)
+            return R2CommandResult(output: output, logs: collector.entries)
+        }
+    }
+
     public func registerIOPlugin(
         provider: R2IOProvider,
         uriSchemes: [String]
