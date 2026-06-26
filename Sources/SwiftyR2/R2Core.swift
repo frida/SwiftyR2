@@ -81,16 +81,7 @@ public final class R2Core: @unchecked Sendable {
     }
 
     @discardableResult
-    public func cmd(_ command: String) async -> String {
-        await run {
-            let cStr = r_core_cmd_str(self.core, command)!
-            defer { free(cStr) }
-            return String(cString: cStr)
-        }
-    }
-
-    @discardableResult
-    public func cmdWithLogs(_ command: String) async -> R2CommandResult {
+    public func cmd(_ command: String) async -> R2CommandResult {
         await run {
             let collector = R2LogCollector()
             collector.ownerThread = Thread.current
@@ -100,9 +91,13 @@ public final class R2Core: @unchecked Sendable {
                 r_log_del_callback(r2LogCallback)
                 Unmanaged<R2LogCollector>.fromOpaque(user).release()
             }
-            let cStr = r_core_cmd_str(self.core, command)!
-            defer { free(cStr) }
-            let output = String(cString: cStr)
+            let output: String?
+            if let cStr = r_core_cmd_str(self.core, command) {
+                defer { free(cStr) }
+                output = String(cString: cStr)
+            } else {
+                output = nil
+            }
             return R2CommandResult(output: output, logs: collector.entries)
         }
     }

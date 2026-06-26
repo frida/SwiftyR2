@@ -4,7 +4,7 @@ import SwiftyR2
 struct Main {
     static func main() async throws {
         let core = await R2Core.create()
-        let output = await core.cmd("?E Hello World")
+        let output = await core.cmd("?E Hello World").output ?? ""
         print(output)
     }
 }

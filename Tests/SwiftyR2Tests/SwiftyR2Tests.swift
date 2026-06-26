@@ -7,7 +7,7 @@ final class SwiftyR2Tests: XCTestCase {
     func testCoreCreationAndSimpleCommand() async throws {
         let core = await R2Core.create()
 
-        let output = await core.cmd("?V")
+        let output = await core.cmd("?V").output ?? ""
         XCTAssertFalse(output.isEmpty, "Expected non-empty output from ?V command")
         XCTAssertTrue(
             output.lowercased().contains("radare2"),
@@ -15,10 +15,10 @@ final class SwiftyR2Tests: XCTestCase {
         )
     }
 
-    func testCmdWithLogsCapturesErrors() async throws {
+    func testCmdCapturesErrors() async throws {
         let core = await R2Core.create()
 
-        let result = await core.cmdWithLogs("?v $FB @ 0xdeadbeef")
+        let result = await core.cmd("?v $FB @ 0xdeadbeef")
         XCTAssertTrue(
             result.hasErrors,
             "Expected an error log entry when querying $FB without an analyzed function, got logs: \(result.logs)"
